@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Ajoute le bouton Export Excel aux wizards qui partagent la vue
+         commune account_report_view_form (modèle account.report).
+         On hérite de la vue spécifique de chaque wizard pour que la
+         validation de vue se fasse sur le bon modèle (qui définit
+         bien la méthode action_export_xlsx). -->
+
+    <!-- Trial Balance -->
+    <record id="account_report_balance_view_inherit_xlsx" model="ir.ui.view">
+        <field name="name">account.balance.report.view.form.inherit.xlsx</field>
+        <field name="model">account.balance.report</field>
+        <field name="inherit_id"
+               ref="base_accounting_kit.account_report_balance_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- General Ledger -->
+    <record id="account_report_general_ledger_view_inherit_xlsx" model="ir.ui.view">
+        <field name="name">account.report.general.ledger.view.form.inherit.xlsx</field>
+        <field name="model">account.report.general.ledger</field>
+        <field name="inherit_id"
+               ref="base_accounting_kit.account_report_general_ledger_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Partner Ledger -->
+    <record id="account_report_partner_ledger_view_inherit_xlsx" model="ir.ui.view">
+        <field name="name">account.report.partner.ledger.view.form.inherit.xlsx</field>
+        <field name="model">account.report.partner.ledger</field>
+        <field name="inherit_id"
+               ref="base_accounting_kit.account_report_partner_ledger_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Journal Audit -->
+    <record id="account_print_journal_view_inherit_xlsx" model="ir.ui.view">
+        <field name="name">account.print.journal.view.form.inherit.xlsx</field>
+        <field name="model">account.print.journal</field>
+        <field name="inherit_id"
+               ref="base_accounting_kit.account_common_report_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Cash Flow -->
+    <record id="cash_flow_report_view_inherit_xlsx" model="ir.ui.view">
+        <field name="name">cash.flow.report.view.form.inherit.xlsx</field>
+        <field name="model">cash.flow.report</field>
+        <field name="inherit_id"
+               ref="base_accounting_kit.cash_flow_report_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Tax Report -->
+    <record id="kit_account_tax_report_view_inherit_xlsx" model="ir.ui.view">
+        <field name="name">kit.account.tax.report.view.form.inherit.xlsx</field>
+        <field name="model">kit.account.tax.report</field>
+        <field name="inherit_id"
+               ref="base_accounting_kit.accounting_tax_report_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_account_move_export_xlsx" model="ir.actions.server">
+        <field name="name">Export Excel</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_export_xlsx()</field>
+    </record>
+
+    <record id="account_move_form_inherit_xlsx" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.xlsx</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

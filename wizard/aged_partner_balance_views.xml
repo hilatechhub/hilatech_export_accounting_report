@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="account_aged_trial_balance_view_inherit_xlsx" model="ir.ui.view">
+        <field name="name">account.aged.trial.balance.view.form.inherit.xlsx</field>
+        <field name="model">account.aged.trial.balance</field>
+        <field name="inherit_id"
+               ref="base_accounting_kit.account_aged_trial_balance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='check_report']" position="after">
+                <button string="Export Excel"
+                        name="action_export_xlsx"
+                        type="object"
+                        class="btn-success"
+                        icon="fa-file-excel-o"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

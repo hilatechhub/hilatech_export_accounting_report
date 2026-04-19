@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hilatech Export Accounting Reports - Excel Export for Odoo 19</title>
+    <style>
+        :root {
+            --navy-900: #0f2740;
+            --navy-800: #152f4d;
+            --navy-700: #1f3d63;
+            --navy-50:  #eef2f7;
+            --orange:   #f39c12;
+            --orange-dark: #d9840a;
+            --ink:      #1f2a3a;
+            --muted:    #5a6a7a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--navy-50);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ==== Header ==== */
+        header {
+            position: relative;
+            overflow: hidden;
+            background: var(--navy-900) url("back-07.png") center/cover no-repeat;
+            color: white;
+            padding: 80px 20px 70px;
+            text-align: center;
+        }
+
+        .header-inner { position: relative; z-index: 2; }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 26px;
+        }
+
+        .brand-logo img {
+            height: 80px;
+            width: auto;
+            display: block;
+        }
+
+        footer .brand-logo { margin-bottom: 14px; }
+        footer .brand-logo img { height: 52px; }
+
+        header h1 {
+            font-size: 2.8em;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p.subtitle {
+            font-size: 1.25em;
+            opacity: 0.95;
+            margin-bottom: 22px;
+        }
+
+        .tagline {
+            display: inline-block;
+            color: var(--orange);
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            margin-bottom: 14px;
+        }
+
+        .badges { margin-top: 18px; }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            margin: 4px;
+        }
+
+        .price-badge {
+            display: inline-block;
+            background: var(--orange);
+            color: var(--navy-900);
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 700;
+            margin: 4px;
+            box-shadow: 0 4px 14px rgba(243,156,18,0.35);
+        }
+
+        /* ==== Main ==== */
+        main {
+            background: white;
+            padding: 60px 20px;
+        }
+
+        section { margin-bottom: 55px; }
+
+        h2 {
+            color: var(--navy-900);
+            font-size: 2em;
+            margin-bottom: 28px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--orange);
+            display: inline-block;
+        }
+
+        h3 {
+            color: var(--navy-700);
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        p { color: var(--muted); }
+        p strong { color: var(--ink); }
+
+        /* ==== Features ==== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: #fafbfd;
+            padding: 28px;
+            border-radius: 10px;
+            border-left: 4px solid var(--orange);
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 6px rgba(15,39,64,0.04);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(15,39,64,0.12);
+        }
+
+        .feature-card h4 {
+            color: var(--navy-900);
+            margin-bottom: 12px;
+            font-size: 1.15em;
+        }
+
+        .feature-card ul { list-style: none; margin-left: 0; }
+
+        .feature-card li {
+            padding: 5px 0 5px 26px;
+            position: relative;
+            color: var(--ink);
+        }
+
+        .feature-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--orange);
+            font-weight: 800;
+        }
+
+        /* ==== Reports grid ==== */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin: 30px 0;
+        }
+
+        .report-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e3e8ef;
+            border-top: 4px solid var(--navy-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: border-top-color 0.3s, transform 0.3s;
+        }
+
+        .report-item:hover {
+            border-top-color: var(--orange);
+            transform: translateY(-3px);
+        }
+
+        .report-item-icon { font-size: 1.8em; }
+        .report-item h4 { color: var(--navy-900); font-size: 1.05em; }
+
+        /* ==== Screenshots ==== */
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin: 30px 0;
+        }
+
+        .screenshot {
+            background: white;
+            border: 1px solid #e3e8ef;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(15,39,64,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .screenshot:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(15,39,64,0.15);
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #fafbfd;
+        }
+
+        .screenshot-caption {
+            padding: 14px 18px;
+            border-top: 3px solid var(--orange);
+            background: var(--navy-50);
+        }
+
+        .screenshot-caption h4 {
+            color: var(--navy-900);
+            font-size: 1.05em;
+            margin-bottom: 4px;
+        }
+
+        .screenshot-caption p {
+            color: var(--muted);
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .screenshot-placeholder {
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: repeating-linear-gradient(45deg, #f5f8fb, #f5f8fb 10px, #eef2f7 10px, #eef2f7 20px);
+            color: var(--muted);
+            font-size: 0.95em;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px dashed #cbd4de;
+        }
+
+        /* ==== Tables ==== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(15,39,64,0.06);
+        }
+
+        th {
+            background: var(--navy-900);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 13px 15px;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        tr:hover { background: #fafbfd; }
+
+        /* ==== Company section ==== */
+        .company-section {
+            position: relative;
+            overflow: hidden;
+            background: var(--navy-900);
+            color: white;
+            padding: 60px 30px;
+            margin: 60px 0;
+            border-radius: 12px;
+        }
+
+        .company-section::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--orange);
+            opacity: 0.12;
+            transform: skewX(-25deg);
+            top: -80px;
+            right: -100px;
+        }
+
+        .company-section h2 {
+            color: white;
+            border-bottom-color: var(--orange);
+        }
+
+        .company-section h3,
+        .company-section h4 {
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        .company-section p { color: rgba(255,255,255,0.85); }
+
+        .services-list { list-style: none; margin: 20px 0; }
+
+        .services-list li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            color: rgba(255,255,255,0.95);
+        }
+
+        .services-list li:before {
+            content: "★";
+            position: absolute;
+            left: 0;
+            color: var(--orange);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-card {
+            background: rgba(255,255,255,0.08);
+            padding: 22px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .contact-card:hover {
+            background: rgba(243,156,18,0.15);
+            border-color: var(--orange);
+        }
+
+        .contact-card-icon { font-size: 2em; margin-bottom: 8px; }
+
+        .contact-card strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--orange);
+            letter-spacing: 0.5px;
+        }
+
+        .contact-card a {
+            color: white;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        /* ==== Tech stack ==== */
+        .tech-stack {
+            background: #fafbfd;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 1px solid #e3e8ef;
+        }
+
+        .tech-stack p { color: var(--ink); }
+
+        .tech-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            background: white;
+            padding: 14px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #dce3eb;
+            font-weight: 600;
+            color: var(--navy-900);
+        }
+
+        /* ==== CTA ==== */
+        .cta-section {
+            text-align: center;
+            padding: 55px 25px;
+            background: linear-gradient(135deg, #fef5e7 0%, #fff9ee 100%);
+            border-radius: 12px;
+            margin: 50px 0;
+            border: 1px solid #f8e3b8;
+        }
+
+        .cta-section h2 {
+            border-bottom-color: var(--orange);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--navy-900);
+            color: white;
+            padding: 15px 36px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            margin: 8px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(15,39,64,0.3);
+        }
+
+        .cta-button.primary {
+            background: var(--orange);
+            color: var(--navy-900);
+        }
+
+        .cta-button.primary:hover {
+            background: var(--orange-dark);
+            box-shadow: 0 6px 18px rgba(243,156,18,0.4);
+        }
+
+        .cta-button.whatsapp {
+            background: #25d366;
+            color: white;
+        }
+
+        /* ==== Footer ==== */
+        footer {
+            background: var(--navy-900);
+            color: white;
+            text-align: center;
+            padding: 45px 20px;
+            margin-top: 60px;
+        }
+
+        footer h3 { color: white; margin-bottom: 8px; }
+        footer p { color: rgba(255,255,255,0.8); margin: 10px 0; }
+
+        .footer-tagline {
+            color: var(--orange);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .footer-links { margin: 20px 0; }
+
+        .footer-links a {
+            color: var(--orange);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+        }
+
+        .footer-links a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .features-grid,
+            .reports-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-inner">
+            <div class="brand-logo">
+                <img src="logo.png" alt="Hilatech">
+            </div>
+            <div class="tagline">Digitize • Optimize • Excel</div>
+            <h1>📊 Excel Export — Accounting Reports</h1>
+            <p class="subtitle">Professional XLSX export for all Base Accounting Kit reports</p>
+            <div class="badges">
+                <span class="version-badge">Version 19.0.1.0.0</span>
+                <span class="version-badge">Odoo 19</span>
+                <span class="version-badge">LGPL-3</span>
+                <br>
+                <span class="price-badge">💎 €5 — One-time license</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Introduction -->
+            <section>
+                <h2>📋 About the Module</h2>
+                <p>
+                    <strong>Hilatech Export Accounting Reports</strong> adds an
+                    <strong>"Export Excel"</strong> button to <strong>12 accounting report wizards</strong>
+                    from the <em>Base Accounting Kit</em> module, as well as to customer and vendor invoices.
+                </p>
+                <p style="margin-top: 15px;">
+                    Exports faithfully reproduce the <strong>hierarchical formatting</strong>
+                    of Odoo's PDF reports, including company headers, period, filters, child account
+                    indentation, bold totals and monetary formatting. An essential tool for accountants,
+                    auditors and controllers who need to rework data in Excel.
+                </p>
+            </section>
+
+            <!-- Reports Supported -->
+            <section>
+                <h2>📑 Supported Reports</h2>
+                <div class="reports-grid">
+                    <div class="report-item"><div class="report-item-icon">💰</div><h4>Profit and Loss</h4></div>
+                    <div class="report-item"><div class="report-item-icon">⚖️</div><h4>Balance Sheet</h4></div>
+                    <div class="report-item"><div class="report-item-icon">📗</div><h4>General Ledger</h4></div>
+                    <div class="report-item"><div class="report-item-icon">📊</div><h4>Trial Balance</h4></div>
+                    <div class="report-item"><div class="report-item-icon">👥</div><h4>Partner Ledger</h4></div>
+                    <div class="report-item"><div class="report-item-icon">⏳</div><h4>Aged Partner Balance</h4></div>
+                    <div class="report-item"><div class="report-item-icon">🔎</div><h4>Journal Audit</h4></div>
+                    <div class="report-item"><div class="report-item-icon">💸</div><h4>Cash Flow</h4></div>
+                    <div class="report-item"><div class="report-item-icon">🏦</div><h4>Bank Book</h4></div>
+                    <div class="report-item"><div class="report-item-icon">💵</div><h4>Cash Book</h4></div>
+                    <div class="report-item"><div class="report-item-icon">📅</div><h4>Day Book</h4></div>
+                    <div class="report-item"><div class="report-item-icon">🧾</div><h4>Tax Report</h4></div>
+                    <div class="report-item"><div class="report-item-icon">🧿</div><h4>Customer / Vendor Invoices</h4></div>
+                </div>
+            </section>
+
+            <!-- Key Features -->
+            <section>
+                <h2>✨ Key Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>🎨 Faithful Formatting</h4>
+                        <ul>
+                            <li>Reproduces the PDF hierarchy</li>
+                            <li>Automatic indentation of child accounts</li>
+                            <li>Bold totals and subtotals</li>
+                            <li>Localized monetary formatting</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🏢 Custom Header</h4>
+                        <ul>
+                            <li>Company name and logo</li>
+                            <li>Report period (From / To)</li>
+                            <li>Applied filters (journals, accounts)</li>
+                            <li>Move type (Posted / All)</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>⚡ Native Integration</h4>
+                        <ul>
+                            <li>"Export Excel" button on every wizard</li>
+                            <li>Same filters as PDF printing</li>
+                            <li>Direct XLSX file download</li>
+                            <li>No workflow changes</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🔢 Actionable Data</h4>
+                        <ul>
+                            <li>Numeric values (not text)</li>
+                            <li>Formulas and sorting available in Excel</li>
+                            <li>Auto-adjusted column widths</li>
+                            <li>Compatible with Excel, LibreOffice, Google Sheets</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🌍 Multilingual</h4>
+                        <ul>
+                            <li>Headers translated to user language</li>
+                            <li>Compatible with translated JSONB fields (Odoo 17+)</li>
+                            <li>Localized date formats</li>
+                            <li>Multi-company currencies supported</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🔒 Safe and Lightweight</h4>
+                        <ul>
+                            <li>No modification of Odoo models</li>
+                            <li>Clean install and uninstall</li>
+                            <li>Single dependency: xlsxwriter</li>
+                            <li>Compatible with Odoo Enterprise &amp; Community</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screenshots -->
+            <section>
+                <h2>📸 Screenshots</h2>
+                <p style="margin-bottom: 20px;">
+                    Preview of the module in action — from the "Export Excel" button on the report wizards
+                    to the generated XLSX file with its professional formatting.
+                </p>
+                <div class="screenshots-grid">
+                    <div class="screenshot">
+                        <img src="screenshots/screenshot-1.png"
+                             alt="Export Excel button on wizard"
+                             onerror="this.parentElement.innerHTML='&lt;div class=screenshot-placeholder&gt;📷 Drop here&lt;br&gt;screenshots/screenshot-1.png&lt;/div&gt;'+this.parentElement.querySelector('.screenshot-caption').outerHTML">
+                        <div class="screenshot-caption">
+                            <h4>"Export Excel" Button on Wizard</h4>
+                            <p>Native integration next to the PDF print button.</p>
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="screenshots/screenshot-2.png"
+                             alt="Cash Book / Bank Book Export"
+                             onerror="this.parentElement.innerHTML='&lt;div class=screenshot-placeholder&gt;📷 Drop here&lt;br&gt;screenshots/screenshot-2.png&lt;/div&gt;'+this.parentElement.querySelector('.screenshot-caption').outerHTML">
+                        <div class="screenshot-caption">
+                            <h4>Cash Book / Bank Book Export</h4>
+                            <p>Excel output with company header, period and totals.</p>
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="screenshots/screenshot-3.png"
+                             alt="General Ledger Export"
+                             onerror="this.parentElement.innerHTML='&lt;div class=screenshot-placeholder&gt;📷 Drop here&lt;br&gt;screenshots/screenshot-3.png&lt;/div&gt;'+this.parentElement.querySelector('.screenshot-caption').outerHTML">
+                        <div class="screenshot-caption">
+                            <h4>General Ledger Export</h4>
+                            <p>Account hierarchy with indentation and subtotals.</p>
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="screenshots/screenshot-4.png"
+                             alt="Trial Balance Export"
+                             onerror="this.parentElement.innerHTML='&lt;div class=screenshot-placeholder&gt;📷 Drop here&lt;br&gt;screenshots/screenshot-4.png&lt;/div&gt;'+this.parentElement.querySelector('.screenshot-caption').outerHTML">
+                        <div class="screenshot-caption">
+                            <h4>Trial Balance Export</h4>
+                            <p>Trial balance exported with monetary formatting.</p>
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="screenshots/screenshot-5.png"
+                             alt="Invoice Export"
+                             onerror="this.parentElement.innerHTML='&lt;div class=screenshot-placeholder&gt;📷 Drop here&lt;br&gt;screenshots/screenshot-5.png&lt;/div&gt;'+this.parentElement.querySelector('.screenshot-caption').outerHTML">
+                        <div class="screenshot-caption">
+                            <h4>Invoice Export</h4>
+                            <p>Customer and vendor invoices in Excel format.</p>
+                        </div>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="screenshots/screenshot-6.png"
+                             alt="Additional screenshot"
+                             onerror="this.parentElement.innerHTML='&lt;div class=screenshot-placeholder&gt;📷 Drop here&lt;br&gt;screenshots/screenshot-6.png&lt;/div&gt;'+this.parentElement.querySelector('.screenshot-caption').outerHTML">
+                        <div class="screenshot-caption">
+                            <h4>Day Book / Tax Report</h4>
+                            <p>Other reports supported by the module.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Details -->
+            <section>
+                <h2>🔧 Technical Details</h2>
+
+                <h3>Dependencies</h3>
+                <div class="tech-stack">
+                    <p><strong>Required Odoo modules:</strong></p>
+                    <div class="tech-items">
+                        <div class="tech-item">account</div>
+                        <div class="tech-item">base_accounting_kit</div>
+                    </div>
+                    <p style="margin-top: 20px;"><strong>Python dependency:</strong></p>
+                    <div class="tech-items">
+                        <div class="tech-item">xlsxwriter</div>
+                    </div>
+                </div>
+
+                <h3>Compatibility</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Odoo Version</strong></td><td>19.0 (Community &amp; Enterprise)</td></tr>
+                        <tr><td><strong>License</strong></td><td>LGPL-3</td></tr>
+                        <tr><td><strong>Output Format</strong></td><td>XLSX (Microsoft Excel Open XML)</td></tr>
+                        <tr><td><strong>Installation</strong></td><td>Apps &gt; Search "Hilatech Export" &gt; Install</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Company Section -->
+            <section class="company-section">
+                <h2>About Hilatech</h2>
+                <p>
+                    <strong style="color:white;">Hilatech</strong> is the publisher of this module and a
+                    consulting firm specialized in the implementation and development of tailor-made
+                    Odoo ERP solutions. We support SMEs, restaurants, hotels and retailers in the
+                    digital transformation of their business processes.
+                </p>
+
+                <h4>💪 Our Strengths</h4>
+                <ul class="services-list">
+                    <li>Odoo expertise 15 → 19 (all versions)</li>
+                    <li>Development of robust custom modules</li>
+                    <li>Responsive multilingual technical support</li>
+                    <li>Agile and methodical implementation</li>
+                    <li>Customer-value driven approach</li>
+                </ul>
+
+                <h3>📞 Contact &amp; Support</h3>
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <div class="contact-card-icon">📧</div>
+                        <strong>SUPPORT EMAIL</strong>
+                        <a href="mailto:support@hilatech.co">support@hilatech.co</a>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-card-icon">🌐</div>
+                        <strong>WEBSITE</strong>
+                        <a href="https://hilatech.co">hilatech.co</a>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-card-icon">💬</div>
+                        <strong>WHATSAPP</strong>
+                        <a href="https://wa.me/33753817860">+33 7 53 81 78 60</a>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-card-icon">👤</div>
+                        <strong>AUTHOR</strong>
+                        <span style="color:white;">Olivier Kamdem</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="cta-section">
+                <h2>Ready to Export Your Accounting Reports?</h2>
+                <p style="margin: 20px 0; font-size: 1.1em;">
+                    Install <strong>Hilatech Export Accounting Reports</strong> and enjoy professional
+                    Excel exports directly from your report wizards.
+                </p>
+                <a href="mailto:support@hilatech.co" class="cta-button primary">📧 Contact Us</a>
+                <a href="https://hilatech.co" class="cta-button">🌐 Hilatech Website</a>
+                <a href="https://wa.me/33753817860" class="cta-button whatsapp">💬 WhatsApp</a>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="brand-logo">
+                <img src="logo.png" alt="Hilatech">
+            </div>
+            <div class="footer-tagline">Digitize • Optimize • Excel</div>
+            <h3>Hilatech Export Accounting Reports</h3>
+            <p>Professional Excel export for all Base Accounting Kit reports</p>
+
+            <div class="footer-links">
+                <a href="https://hilatech.co">Website</a>
+                <a href="mailto:support@hilatech.co">Support</a>
+                <a href="https://wa.me/33753817860">WhatsApp</a>
+            </div>
+
+            <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15);">
+                <strong style="color:white;">© 2026 Hilatech — Olivier Kamdem</strong><br>
+                LGPL-3 License • Compatible with Odoo 19
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
